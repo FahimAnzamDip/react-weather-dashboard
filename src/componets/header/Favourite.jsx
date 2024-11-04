@@ -1,8 +1,11 @@
 import HeartIcon from '../../assets/images/heart.svg';
 
-export default function Favourite() {
+export default function Favourite({ onShowFavourites }) {
     return (
-        <div className="flex cursor-pointer items-center gap-2 rounded-md p-2 transition-all hover:bg-black/30">
+        <div
+            onClick={onShowFavourites}
+            className="flex cursor-pointer items-center gap-2 rounded-md p-2 transition-all hover:bg-black/30"
+        >
             <img src={HeartIcon} alt="" />
             <span>Favourite Locations</span>
         </div>
