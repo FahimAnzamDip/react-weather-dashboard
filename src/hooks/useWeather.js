@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function useWeather() {
     const [weatherData, setWeatherData] = useState({
+        description: '',
         location: '',
         climate: '',
         temparature: '',
@@ -22,7 +23,7 @@ export default function useWeather() {
 
     const [error, setError] = useState(null);
 
-    const fetchWeatherData = async (longitude, latitude) => {
+    const fetchWeatherData = async (latitude, longitude) => {
         try {
             setLoading({
                 ...loading,
@@ -31,7 +32,7 @@ export default function useWeather() {
             });
 
             const response = await fetch(
-                `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&appid=${import.meta.env.VITE_WEATHER_API_KEY}&unit=metric`,
+                `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${import.meta.env.VITE_WEATHER_API_KEY}&units=metric`,
             );
             if (!response.ok) {
                 const errorMessage =
@@ -39,10 +40,11 @@ export default function useWeather() {
                 throw new Error(errorMessage);
             }
 
-            const data = response.json();
+            const data = await response.json();
 
             setWeatherData({
                 ...weatherData,
+                description: data?.weather[0]?.description,
                 location: data?.name,
                 climate: data?.weather[0]?.main,
                 temparature: data?.main?.temp,
@@ -56,8 +58,34 @@ export default function useWeather() {
                 latitude: latitude,
             });
         } catch (err) {
+            console.log(err);
         } finally {
             setLoading({ ...loading, state: false, message: '' });
         }
     };
+
+    useEffect(() => {
+        let ignore = false;
+
+        setLoading({
+            ...loading,
+            state: true,
+            message: 'Fetching location...',
+        });
+
+        navigator.geolocation.getCurrentPosition((position) => {
+            if (!ignore) {
+                fetchWeatherData(
+                    position.coords.latitude,
+                    position.coords.longitude,
+                );
+            }
+        });
+
+        return () => {
+            ignore = true;
+        };
+    }, []);
+
+    return { weatherData, loading, error };
 }
