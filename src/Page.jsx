@@ -12,7 +12,7 @@ import WeatherBoard from './componets/weather/WeatherBoard';
 import { WeatherContext } from './context';
 
 export default function Page() {
-    const { weatherData, loading } = useContext(WeatherContext);
+    const { weatherData } = useContext(WeatherContext);
 
     const [climateImage, setClimateImage] = useState('');
 
@@ -45,28 +45,16 @@ export default function Page() {
     }, [weatherData.climate]);
 
     return (
-        <>
-            {loading.state ? (
-                <div className="flex h-screen items-center justify-center">
-                    <p className="text-center text-6xl font-medium text-teal-500">
-                        {loading.message}
-                    </p>
+        <div
+            className="grid h-screen place-items-center bg-body bg-cover bg-no-repeat font-[Roboto] text-light"
+            style={{ backgroundImage: `url('${climateImage}')` }}
+        >
+            <Header />
+            <main>
+                <div className="container">
+                    <WeatherBoard />
                 </div>
-            ) : (
-                <>
-                    <div
-                        className="grid h-screen place-items-center bg-body bg-cover bg-no-repeat font-[Roboto] text-light"
-                        style={{ backgroundImage: `url('${climateImage}')` }}
-                    >
-                        <Header />
-                        <main>
-                            <div className="container">
-                                <WeatherBoard />
-                            </div>
-                        </main>
-                    </div>
-                </>
-            )}
-        </>
+            </main>
+        </div>
     );
 }
