@@ -24,7 +24,7 @@ export default function Search() {
                     onChange={handleChange}
                     className="w-full border-none bg-transparent text-xs text-white outline-none placeholder:text-white md:text-base"
                     type="search"
-                    placeholder="Search Location"
+                    placeholder="Search in Bangladesh..."
                     required
                 />
             </div>
